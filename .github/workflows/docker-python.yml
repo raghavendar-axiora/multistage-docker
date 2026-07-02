@@ -1,0 +1,31 @@
+name: Docker Python CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build multi-stage Docker image
+      run: |
+        docker build -t flask-input-app .
+
+    - name: Run container in background
+      run: |
+        docker run -d -p 5000:5000 --name flask-app flask-input-app
+        sleep 5
+
+    - name: Test localhost output
+      run: |
+        curl -s http://localhost:5000 | grep "Enter something"
