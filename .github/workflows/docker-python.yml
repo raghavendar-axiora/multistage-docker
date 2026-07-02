@@ -28,11 +28,18 @@ jobs:
     - name: Verify output
       run: |
         for i in {1..10}; do
-         if curl -s http://localhost:5000 | grep -i "Enter"; then
-        echo "Form detected"
-        exit 0
-        fi
+          # Safely fetch the response. '|| true' ensures that even if curl fails to connect, the script doesn't exit.
+          response=$(curl -fs http://localhost:5000 || true)
+          
+          # Check if the word "Enter" is in the response (case-insensitive)
+          if echo "$response" | grep -qi "Enter"; then
+            echo "Form detected"
+            exit 0
+          fi
+          
+          echo "Attempt $i: Form not found yet, retrying in 11 seconds..."
           sleep 11
-          done
-           echo "Form not found"
-            exit 1
+        done
+        
+        echo "Error: Form not found after 10 attempts"
+        exit 1
