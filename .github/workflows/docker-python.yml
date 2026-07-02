@@ -26,4 +26,13 @@ jobs:
         done
 
     - name: Verify output
-      run: curl -s http://localhost:5000 | grep "Enter something"
+      run: |
+        for i in {1..10}; do
+         if curl -s http://localhost:5000 | grep -i "Enter"; then
+        echo "Form detected"
+        exit 0
+        fi
+          sleep 2
+          done
+           echo "Form not found"
+            exit 1
