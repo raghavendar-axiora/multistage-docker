@@ -31,7 +31,12 @@ jobs:
         done
 
     - name: Run container
-      run: docker run -d -p 5000:5000 --name flask-app flask-input-app
+      run: |
+        # Forcefully remove any existing container with the name 'flask-app'
+        docker rm -f flask-app || true
+        
+        # Start the new container
+        docker run -d -p 5000:5000 --name flask-app flask-input-app
 
     - name: Verify output
       run: |
