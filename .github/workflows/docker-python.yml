@@ -32,7 +32,7 @@ jobs:
         echo "Form detected"
         exit 0
         fi
-          sleep 2
+          sleep 11
           done
            echo "Form not found"
             exit 1
